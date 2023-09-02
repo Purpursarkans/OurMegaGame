@@ -1,0 +1,105 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "Purp: linux сборка и отладка",
+            "command": "/usr/bin/g++",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}.lin", //(.lin не обязательная часть названия, я её добавил только ради удобства)
+                "-lsfml-graphics",
+                "-lsfml-window", 
+                "-lsfml-system",
+                "-lsfml-network",
+                "-lz",
+                "-lharfbuzz",
+                "-lpng",
+                "-lfreetype",
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "Задача создана отладчиком."
+        },
+        {
+            "type": "cppbuild",
+            "label": "Purp: windows сборка активного файла",
+            "command": "/usr/bin/x86_64-w64-mingw32-g++",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}.exe",
+                "-static",
+                "-DSFML_STATIC",
+                "-lsfml-graphics-s", 
+                "-lsfml-window-s",
+                "-lsfml-network-s", 
+                "-lsfml-system-s",
+                "-lharfbuzz",
+                "-lfreetype",
+                "-lpng",
+                "-lopengl32",
+                "-lz",
+                "-lwinmm",
+                "-lgdi32",
+                "-lws2_32",
+                "-L/home/igorek/Project/vscode/cpp/OurMegaGame/SFML-2.6.0/lib",
+                "-I/home/igorek/Project/vscode/cpp/OurMegaGame/SFML-2.6.0/include",
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "Задача создана отладчиком.(копия)"
+        },
+        {
+
+            "label": "Purp: Run windows",
+            "type": "shell",
+            "command": "konsole -e wine ${fileBasenameNoExtension}.exe", 
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Purp: C/C++: mingw++ сборка активного файла"
+            ],
+            "problemMatcher": [
+                "$go"
+            ]
+        },
+        {
+            "label": "Purp: Run linux",
+            "type": "shell",
+            "command": "konsole -e ./${fileBasenameNoExtension}.lin", //(.lin не обязательная часть названия, я её добавил только ради удобства)
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "Purp: linux сборка и отладка"
+            ],
+            "problemMatcher": [
+                "$go"
+            ]
+        },
+        {
+            "label": "Purp: Run linux+windows",
+            "type": "shell",
+            "dependsOn": [
+                "Purp: Run linux",
+                "Purp: Run windows"
+            ],
+            "problemMatcher": [
+                "$go"
+            ]
+        }
+    ],
+    "version": "2.0.0"
+}

@@ -1,0 +1,68 @@
+{
+    "configurations": [
+        {
+            "name": "Purp: linux сборка и отладка",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}.lin", //(.lin не обязательная часть названия, я её добавил только ради удобства)
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Включить автоматическое форматирование для gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Задать для варианта приложения дизассемблирования значение Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Purp: linux сборка и отладка",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name" : "Purp: Run windows",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/usr/bin/ls", //(заглушка что бы таск правильно отрабатывал)
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "preLaunchTask": "Purp: Run windows",
+        },
+        {
+            "name": "Purp: Run linux",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/usr/bin/ls", //(заглушка что бы таск правильно отрабатывал)
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "preLaunchTask": "Purp: Run linux",
+        },
+        {
+            "name": "Purp: Run linux+windows",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/usr/bin/ls", //(заглушка что бы таск правильно отрабатывал)
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "preLaunchTask": "Purp: Run linux+windows",
+        }
+
+    ],
+    "version": "2.0.0"
+}
