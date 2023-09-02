@@ -31,12 +31,6 @@ int main()
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) window.close();
 
 
-
-        KeyBoardAction kbp;
-        POINT p;
-        p = kbp.KeyBoardCheck(time);
-        shape.move(p.x,p.y);
-
         window.clear();
         window.draw(shape);
         window.display();
