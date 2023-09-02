@@ -2,3 +2,4 @@
 *.lin
 *.exe
 SFML-*
+.log
