@@ -61,7 +61,63 @@
             "environment": [],
             "externalConsole": false,
             "preLaunchTask": "Purp: Run linux+windows",
-        }
+        },
+        {
+            "name": "Kovval: clang++.exe - Сборка и отладка активного файла",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/../${fileBasenameNoExtension}.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}/..",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath":"C:/msys64/clang64/bin/gdb.exe",
+            "setupCommands": [
+                {
+                    "description": "Включить автоматическое форматирование для gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "Kovval: C/C++: clang++.exe сборка активного файла"
+        },
+        {
+            "type": "cppbuild",
+            "label": "Kovval: C/C++: clang++.exe сборка активного файла",
+            "command": "clang++.exe",
+            "args": [
+                "-g",
+                "${fileDirname}/*.cpp",
+                "-o",
+                "${fileDirname}/../${fileBasenameNoExtension}.exe",
+                "-lsfml-graphics",
+                "-lsfml-window",
+                "-lsfml-network",
+                "-lsfml-system",
+                "-lharfbuzz",
+                "-lfreetype",
+                "-lpng",
+                "-lopengl32",
+                "-lz",
+                "-lwinmm",
+                "-lgdi32",
+                "-lws2_32",
+                "-I${fileDirname}/../include",
+                "-LC:/msys64/clang64/lib",
+                "-IC:/msys64/clang64/include",
+                "-IC:/msys64/clang64/include/freetype2"
+            ],
+            "options": {
+                "cwd": "C:/msys64/clang64/bin"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "detail": "Задача создана отладчиком."
+        },
 
     ],
     "version": "2.0.0"
