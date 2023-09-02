@@ -4,10 +4,10 @@
             "name": "Purp: linux сборка и отладка",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/${fileBasenameNoExtension}.lin", //(.lin не обязательная часть названия, я её добавил только ради удобства)
+            "program": "${fileDirname}/../${fileBasenameNoExtension}.lin", //(.lin не обязательная часть названия, я её добавил только ради удобства)
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${fileDirname}/..",
             "environment": [],
             "externalConsole": true,
             "MIMode": "gdb",

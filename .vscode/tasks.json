@@ -80,7 +80,7 @@
         {
             "label": "Purp: Run linux",
             "type": "shell",
-            "command": "konsole -e ./${fileBasenameNoExtension}.lin", //(.lin не обязательная часть названия, я её добавил только ради удобства)
+            "command": "konsole -e ./../${fileBasenameNoExtension}.lin", //(.lin не обязательная часть названия, я её добавил только ради удобства)
             "dependsOrder": "sequence",
             "dependsOn": [
                 "Purp: linux сборка и отладка"
