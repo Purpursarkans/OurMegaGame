@@ -92,7 +92,7 @@ int main()
         // text << "RIGHT: " << right << "\n";
 
         sf::Font font;
-        if (!font.loadFromFile("text.ttf"))
+        if (!font.loadFromFile("assets/text.ttf"))
         {
             std::cerr << "text.ttf not found" << std::endl;        
         }
