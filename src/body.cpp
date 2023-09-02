@@ -38,7 +38,7 @@ void Body::process(float dt)
     if (velocity != VECTOR2F_ZERO)
     {
         auto norm = normalize(velocity);
-        std::cout << norm.x << " " << norm.y << " ; " << roundf(norm.x) << " " << roundf(norm.y) << std::endl;
+        // std::cout << norm.x << " " << norm.y << " ; " << roundf(norm.x) << " " << roundf(norm.y) << std::endl;
 
         if (velocity.x < target_velocity.x && velocity.x > -target_velocity.x)
         {

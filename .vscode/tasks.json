@@ -118,6 +118,7 @@
                 "-lpng",
                 "-lopengl32",
                 "-lz",
+                "-lm",
                 "-lwinmm",
                 "-lgdi32",
                 "-lws2_32",
