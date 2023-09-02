@@ -7,6 +7,8 @@
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>
 
+#include <math.h>
+
 // template <typename T>
 // class vec2
 // {
