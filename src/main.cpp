@@ -9,6 +9,18 @@ static int WINDOW_HEIGHT = 720;
 
 static bool up, left, down, right;
 
+
+float length(sf::Vector2f v)
+{
+    return sqrt(v.x*v.x+v.y*v.y);
+}
+
+sf::Vector2f norm(sf::Vector2f v)
+{
+    float len = length(v);
+    return sf::Vector2f(v.x/len, v.y/len);
+}
+
 void handleControls(sf::Event event)
 {
     bool val;
@@ -45,7 +57,13 @@ int main()
     Renderer r(window);
     std::map<std::string, sf::Texture> textures = r.loadImagesFromFolder("assets/");
     auto CHAR_SPRITE = r.newSprite(&textures["char.png"]);
-    
+
+    sf::Font font;
+    if (!font.loadFromFile("assets/text.ttf"))
+    {
+        std::cerr << "text.ttf not found" << std::endl;        
+    }
+
     auto player = Body(
         &CHAR_SPRITE,
         sf::Vector2f(5.f, 5.f),
@@ -75,42 +93,45 @@ int main()
         }
 
         float s = elapsed.asSeconds();
-
         std::stringstream text;
-        auto pv = player.getVelocity();
 
         if (fps_avg.size() > 100) fps_avg.erase(fps_avg.begin());
         fps_avg.push_back(1/s);
-
         text << "Frame time: " << s << "\n";
         text << "FPS: " << std::accumulate(fps_avg.begin(), fps_avg.end(), 0.f) / fps_avg.size() << "\n";
-        text << "VX" << pv.x << "\n";
-        text << "VY" << pv.y << "\n";
-        // text << "UP: " << up << "\n";
-        // text << "LEFT: " << left << "\n";
-        // text << "DOWN: " << down << "\n";
-        // text << "RIGHT: " << right << "\n";
 
-        sf::Font font;
-        if (!font.loadFromFile("assets/text.ttf"))
-        {
-            std::cerr << "text.ttf not found" << std::endl;        
-        }
+        auto pv = player.getVelocity();
+        text << "Velocity" << "\n";
+        text << "⌞ X " << pv.x << "\n";
+        text << "⌞ Y " << pv.y << "\n";
+
+        sf::Vector2f viewport_target;
+
+        if (right) viewport_target = player.applyForce(2, 0);
+        else if (left) viewport_target = player.applyForce(-2, 0);
+        // else {player.setVelocityX(0.f);}
+
+        if (down) viewport_target = player.applyForce(0, 2);
+        else if (up) viewport_target = player.applyForce(0, -2);
+        // else player.setVelocityY(0.f);
+
+        auto vvec = r.viewport.getCenter() - player.getPosition(); 
+        auto vdist = length(vvec);
+        text << "Viewport distance: " << vvec.x << " " <<vvec.y << "\n";
+        text << "⌞ Length" << vdist << "\n";
+
+        float vmult = s;
+        if (vdist > 5.f) r.viewport.move(vvec);
+        else r.viewport.move(viewport_target.x * s, viewport_target.y * s);
+
+        player.process(s);
+
+        window.clear();
+
         sf::Text texto;
         texto.setFont(font);
         texto.setString(text.str());
 
-        if (right) {player.applyForce(2, 0);}
-        else if (left) {player.applyForce(-2, 0);}
-        // else {player.setVelocityX(0.f);}
-
-        if (down) player.applyForce(0, 2);
-        else if (up) player.applyForce(0, -2);
-        // else player.setVelocityY(0.f);
-        
-        player.process(s);
-
-        window.clear();
         window.draw(texto);
         r.render();
         window.display();

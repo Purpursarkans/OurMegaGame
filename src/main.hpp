@@ -9,6 +9,9 @@
 
 #include <math.h>
 
+float length(sf::Vector2f v);
+sf::Vector2f norm(sf::Vector2f v);
+
 // template <typename T>
 // class vec2
 // {

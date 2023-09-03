@@ -23,19 +23,26 @@ std::map<std::string, sf::Texture> Renderer::loadImagesFromFolder(const std::str
 }
 
 
-Renderer::Renderer(sf::RenderWindow& w) : window(w) {}
+Renderer::Renderer(sf::RenderWindow& w) : window(w)
+{
+    // auto ws = w.getSize();
+    viewport.setSize(1280.f, 720.f);
+    viewport.setCenter(0.5f, 0.5f);
+    w.setView(viewport);
+}
 
 void Renderer::render()
 {
-    for (const auto& sprite : this->pool) {
-        this->window.draw(*sprite);
+    for (const auto& sprite : pool) {
+        window.draw(*sprite);
     }
+    window.setView(viewport);
 }
 
 sf::Sprite Renderer::newSprite(sf::Texture* texture)
 {
     sf::Sprite sprite;
     sprite.setTexture(*texture);
-    this->pool.insert(this->pool.begin(), &sprite);
+    pool.insert(pool.begin(), &sprite);
     return sprite;
 }

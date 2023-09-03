@@ -13,6 +13,7 @@ class Renderer
     public:
     std::vector<sf::Sprite*> pool;
     sf::RenderWindow& window;
+    sf::View viewport;
 
     Renderer(sf::RenderWindow& w);
 

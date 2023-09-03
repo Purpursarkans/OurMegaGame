@@ -2,51 +2,41 @@
 
 const sf::Vector2f &Body::applyForce(const sf::Vector2f &force)
 {
-    this->velocity += force;
-    return this->velocity;
+    velocity += force;
+    return velocity;
 }
 
 const sf::Vector2f &Body::applyForce(float x, float y)
 {
-    return this->applyForce(sf::Vector2f(x, y));
+    return applyForce(sf::Vector2f(x, y));
 }
 
 const sf::Vector2f &Body::applyForce(int x, int y)
 {
-    return this->applyForce(sf::Vector2f(
-        this->speed.x * x,
-        this->speed.y * y
+    return applyForce(sf::Vector2f(
+        speed.x * x,
+        speed.y * y
     ));
 }
 
 const sf::Vector2f &Body::getVelocity()
 {
-    return this->velocity;
-}
-
-sf::Vector2f normalize(const sf::Vector2f& source)
-{
-    float length = sqrt((source.x * source.x) + (source.y * source.y));
-    if (length != 0)
-        return sf::Vector2f(source.x / length, source.y / length);
-    else
-        return source;
+    return velocity;
 }
 
 void Body::process(float dt)
 {
     if (velocity != VECTOR2F_ZERO)
     {
-        auto norm = normalize(velocity);
-        // std::cout << norm.x << " " << norm.y << " ; " << roundf(norm.x) << " " << roundf(norm.y) << std::endl;
+        auto vn = norm(velocity);
 
         if (velocity.x < target_velocity.x && velocity.x > -target_velocity.x)
         {
-            velocity.x -= norm.x * speed.x / 2;
+            velocity.x -= vn.x * speed.x / 2;
         }
         if (velocity.y < target_velocity.y && velocity.y > -target_velocity.y)
         {
-            velocity.y -= norm.y * speed.y / 2;
+            velocity.y -= vn.y * speed.y / 2;
         }
 
         if (velocity.x < speed.x && velocity.x > -speed.x)
@@ -60,40 +50,40 @@ void Body::process(float dt)
 
         if (velocity.x >= target_velocity.x || velocity.x <= -target_velocity.x)
         {
-            velocity.x -= roundf(norm.x) * speed.x * 2;
+            velocity.x -= roundf(vn.x) * speed.x * 2;
         }
         if (velocity.y >= target_velocity.y || velocity.y <= -target_velocity.y)
         {
-            velocity.y -= roundf(norm.y) * speed.y * 2;
+            velocity.y -= roundf(vn.y) * speed.y * 2;
         }
     }
-    // std::cout << velocity.x << " " << velocity.y << std::endl;
 
-    float x = this->velocity.x * dt;
-    float y = this->velocity.y * dt;
-    this->sprite->move(x,y);
+    sprite->move(
+        velocity.x * dt,
+        velocity.y * dt
+    );
 
 }
 
 const sf::Vector2f &Body::setVelocityX(float x)
 {
-    this->velocity.x = x;
-    return this->velocity;
+    velocity.x = x;
+    return velocity;
 }
 const sf::Vector2f &Body::setVelocityY(float y)
 {
-    this->velocity.y = y;
-    return this->velocity;
+    velocity.y = y;
+    return velocity;
 }
 
 const sf::Vector2f &Body::setVelocity(const sf::Vector2f &new_velocity)
 {
-    this->velocity = new_velocity;
-    return this->velocity;
+    velocity = new_velocity;
+    return velocity;
 }
 const sf::Vector2f &Body::setVelocity(float x, float y)
 {
-    return this->setVelocity(sf::Vector2f(x,y));
+    return setVelocity(sf::Vector2f(x,y));
 }
 
 Body::Body(
@@ -103,7 +93,7 @@ Body::Body(
     sf::Vector2f target_velocity
 ) : sprite(sprite), speed(speed), velocity(initial_velocity), target_velocity(target_velocity) 
 {
-    if (this->speed.x > this->target_velocity.x || this->speed.y > this->target_velocity.y)
+    if (speed.x > target_velocity.x || speed.y > target_velocity.y)
     {
         std::cerr << "Speed axis is more than target velocity axis! > Unexpected behaviour" << std::endl;
     }
@@ -111,15 +101,15 @@ Body::Body(
 
 const sf::Vector2f &Body::getPosition() 
 {
-    return this->sprite->getPosition();
+    return sprite->getPosition();
 }
 
 void Body::setPosition(float x, float y)
 {
-    this->sprite->setPosition(x, y);
+    sprite->setPosition(x, y);
 }
 
 void Body::setPosition(const sf::Vector2f& position)
 {
-    this->sprite->setPosition(position);
+    sprite->setPosition(position);
 }
