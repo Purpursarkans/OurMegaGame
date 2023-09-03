@@ -51,6 +51,7 @@ int main()
     std::cout << "Init" << std::endl;
 
     std::vector<float> fps_avg;
+    float fps, fps_min, fps_max;
 
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "OMG", sf::Style::Close);
 
@@ -95,40 +96,50 @@ int main()
         float s = elapsed.asSeconds();
         std::stringstream text;
 
-        if (fps_avg.size() > 100) fps_avg.erase(fps_avg.begin());
+        if (fps_avg.size() > 100) 
+        {
+            fps_avg.erase(fps_avg.begin());
+            fps = (int) std::accumulate(fps_avg.begin(), fps_avg.end(), 0.f) / fps_avg.size();
+            if (fps > fps_max && fps < 100000.f) fps_max = (int)fps;
+            else if (fps < fps_min && fps > 24.f) fps_min = (int)fps;
+        }
+
         fps_avg.push_back(1/s);
         text << "Frame time: " << s << "\n";
-        text << "FPS: " << std::accumulate(fps_avg.begin(), fps_avg.end(), 0.f) / fps_avg.size() << "\n";
+        text << "+ FPS: " << fps << "\n";
+        text << "+ MIN: " << fps_min << "\n";
+        text << "+ MAX: " << fps_max << "\n";
 
         auto pv = player.getVelocity();
         text << "Velocity" << "\n";
-        text << "⌞ X " << pv.x << "\n";
-        text << "⌞ Y " << pv.y << "\n";
+        text << "+ X " << pv.x << "\n";
+        text << "+ Y " << pv.y << "\n";
 
-        sf::Vector2f viewport_target;
+        // sf::Vector2f viewport_target;
 
-        if (right) viewport_target = player.applyForce(2, 0);
-        else if (left) viewport_target = player.applyForce(-2, 0);
+        if (right) player.applyForce(2, 0);
+        else if (left) player.applyForce(-2, 0);
         // else {player.setVelocityX(0.f);}
 
-        if (down) viewport_target = player.applyForce(0, 2);
-        else if (up) viewport_target = player.applyForce(0, -2);
+        if (down) player.applyForce(0, 2);
+        else if (up) player.applyForce(0, -2);
         // else player.setVelocityY(0.f);
 
         auto vvec = r.viewport.getCenter() - player.getPosition(); 
         auto vdist = length(vvec);
         text << "Viewport distance: " << vvec.x << " " <<vvec.y << "\n";
-        text << "⌞ Length" << vdist << "\n";
+        text << "+ Length " << vdist << "\n";
 
-        float vmult = s;
-        if (vdist > 5.f) r.viewport.move(vvec);
-        else r.viewport.move(viewport_target.x * s, viewport_target.y * s);
+        // float vm = 1.01f * s * vdist;
+        // if (vdist > 5.f) r.viewport.move(viewport_target.x * vm, viewport_target.y * vm);
+        r.viewport.move(-vvec * s);
 
         player.process(s);
 
         window.clear();
 
         sf::Text texto;
+        texto.setPosition(r.viewport.getCenter()-(r.viewport.getSize()/2.f));
         texto.setFont(font);
         texto.setString(text.str());
 
