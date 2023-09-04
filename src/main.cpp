@@ -51,13 +51,19 @@ int main()
     std::cout << "Init" << std::endl;
 
     std::vector<float> fps_avg;
+    fps_avg.reserve(101);
     float fps, fps_min, fps_max;
 
     sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "OMG", sf::Style::Close);
 
     Renderer r(window);
+
+    r.window.setVerticalSyncEnabled(true);
+    // r.window.setFramerateLimit()
+
     std::map<std::string, sf::Texture> textures = r.loadImagesFromFolder("assets/");
     auto CHAR_SPRITE = r.newSprite(&textures["char.png"]);
+    r.newSprite(&textures["TX Plant.png"]);
 
     sf::Font font;
     if (!font.loadFromFile("assets/text.ttf"))
@@ -100,15 +106,15 @@ int main()
         {
             fps_avg.erase(fps_avg.begin());
             fps = (int) std::accumulate(fps_avg.begin(), fps_avg.end(), 0.f) / fps_avg.size();
-            if (fps > fps_max && fps < 100000.f) fps_max = (int)fps;
-            else if (fps < fps_min && fps > 24.f) fps_min = (int)fps;
+            // if (fps > fps_max && fps < 100000.f) fps_max = (int)fps;
+            // else if (fps < fps_min && fps > 24.f) fps_min = (int)fps;
         }
 
         fps_avg.push_back(1/s);
         text << "Frame time: " << s << "\n";
         text << "+ FPS: " << fps << "\n";
-        text << "+ MIN: " << fps_min << "\n";
-        text << "+ MAX: " << fps_max << "\n";
+        // text << "+ MIN: " << fps_min << "\n";
+        // text << "+ MAX: " << fps_max << "\n";
 
         auto pv = player.getVelocity();
         text << "Velocity" << "\n";
@@ -131,20 +137,19 @@ int main()
         text << "+ Length " << vdist << "\n";
 
         // float vm = 1.01f * s * vdist;
-        // if (vdist > 5.f) r.viewport.move(viewport_target.x * vm, viewport_target.y * vm);
-        r.viewport.move(-vvec * s);
+        if (vdist > 20.f) r.viewport.move(-vvec * s);
 
         player.process(s);
 
         window.clear();
+        r.render();
 
         sf::Text texto;
         texto.setPosition(r.viewport.getCenter()-(r.viewport.getSize()/2.f));
         texto.setFont(font);
         texto.setString(text.str());
-
         window.draw(texto);
-        r.render();
+
         window.display();
     }
 

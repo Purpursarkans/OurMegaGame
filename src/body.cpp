@@ -32,11 +32,11 @@ void Body::process(float dt)
 
         if (velocity.x < target_velocity.x && velocity.x > -target_velocity.x)
         {
-            velocity.x -= vn.x * speed.x / 2;
+            velocity.x -= vn.x * speed.x / 2 * (dt*100);
         }
         if (velocity.y < target_velocity.y && velocity.y > -target_velocity.y)
         {
-            velocity.y -= vn.y * speed.y / 2;
+            velocity.y -= vn.y * speed.y / 2 * (dt*100);
         }
 
         if (velocity.x < speed.x && velocity.x > -speed.x)
