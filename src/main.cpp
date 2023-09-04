@@ -170,16 +170,14 @@ int main()
         packet << dataX << dataY;
         socket.send(packet, recipient, port);
 
-        
+        /*
         std::string ReceiveConnect;    
         sf::Packet ConPack;
         socket.receive(ConPack, recipient, port);
         ConPack >> ReceiveConnect;
         std::cout << "ReceiveConnect: " << ReceiveConnect << "\tfrom ip: " << recipient << "\ton port: " << port << std::endl;
-
-
         ////////////////////////////////////////////////////////////////////////////////////////
-
+        */
 
         // sf::Vector2f viewport_target;
 
