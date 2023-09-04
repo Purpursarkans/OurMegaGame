@@ -1,14 +1,30 @@
 #include "main.hpp"
 #include "renderer.hpp"
 #include "body.hpp"
-#include <sstream>
-#include <numeric>
+
+int myport = 8001;
+const int serverport = 8000;
+const sf::IpAddress serverip = "127.0.0.1";
 
 static int WINDOW_WIDTH = 1280;
 static int WINDOW_HEIGHT = 720;
 
 static bool up, left, down, right;
 
+sf::UdpSocket socket;
+
+void DisconnectAfterExit()
+{
+    	
+    sf::Packet SendConPac;
+    std::string SendConnect = "Disconect";
+    SendConPac << SendConnect;
+
+    sf::IpAddress recipient = serverip;
+    unsigned short port = serverport;
+
+    socket.send(SendConPac, recipient, port);
+}
 
 float length(sf::Vector2f v)
 {
@@ -48,6 +64,7 @@ void log(sf::Vector2f v)
 
 int main()
 {
+    atexit(DisconnectAfterExit);
     std::cout << "Init" << std::endl;
 
     std::vector<float> fps_avg;
@@ -77,6 +94,24 @@ int main()
         VECTOR2F_ZERO,
         sf::Vector2f(150.f, 150.f)
     );
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+    sf::Socket::Status status;
+    sf::Packet SendConPac;
+    do
+    {
+        status = socket.bind(myport);
+    } while (status != sf::Socket::Done && myport++);
+
+    std::string SendConnect = "Connect";
+    SendConPac << SendConnect;
+
+    sf::IpAddress recipient = serverip;
+    unsigned short port = serverport;
+
+    socket.send(SendConPac, serverip, serverport);
+
+    ////////////////////////////////////////////////////////////////////////////////////////
 
     sf::Clock clock;
     while (window.isOpen())
@@ -120,6 +155,29 @@ int main()
         text << "Velocity" << "\n";
         text << "+ X " << pv.x << "\n";
         text << "+ Y " << pv.y << "\n";
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////
+
+        sf::Packet GameData;
+        std::string SendData = "GameData";
+        GameData << SendData;
+        socket.send(GameData, recipient, port);
+
+        float dataX = pv.x;
+        float dataY = pv.y;
+        sf::Packet packet;
+        packet << dataX << dataY;
+        socket.send(packet, recipient, port);
+
+        /*
+        std::string ReceiveConnect;    
+        sf::Packet ConPack;
+        socket.receive(ConPack, recipient, port);
+        ConPack >> ReceiveConnect;
+        std::cout << "ReceiveConnect: " << ReceiveConnect << "\tfrom ip: " << recipient << "\ton port: " << port << std::endl;
+        ////////////////////////////////////////////////////////////////////////////////////////
+        */
 
         // sf::Vector2f viewport_target;
 

@@ -3,11 +3,13 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-// #include <SFML/Audio.hpp>
+#include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>
 
 #include <math.h>
+#include <sstream>
+#include <numeric>
 
 float length(sf::Vector2f v);
 sf::Vector2f norm(sf::Vector2f v);
