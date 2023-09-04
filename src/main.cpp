@@ -80,7 +80,7 @@ int main()
 
     std::map<std::string, sf::Texture> textures = r.loadImagesFromFolder("assets/");
     auto CHAR_SPRITE = r.newSprite(&textures["char.png"]);
-    auto PLANT_SPRITE = r.newSprite(&textures["TX Plant.png"]);
+    r.newSprite(&textures["TX Plant.png"]);
 
     sf::Font font;
     if (!font.loadFromFile("assets/text.ttf"))
