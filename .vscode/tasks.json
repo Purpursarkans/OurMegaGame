@@ -42,8 +42,8 @@
                 "-DSFML_STATIC",
                 "-lsfml-graphics-s", 
                 "-lsfml-window-s",
-                "-lsfml-network-s", 
                 "-lsfml-system-s",
+                "-lsfml-network-s",
                 "-lharfbuzz",
                 "-lfreetype",
                 "-lpng",
@@ -133,7 +133,7 @@
                 "-lglu32",
                 "-lsfml-audio-s",
                 "-LC:/msys64/clang64/lib/libopenal.dll.a",
-                "-lsfml-network-s",
+                "-lsfml-system-s",
                 "-L/clang64/lib",
                 "-lFLAC",
                 "-lm",
@@ -165,7 +165,8 @@
                 "-lgdi32",
                 "-lrpcrt4",
                 "-lbrotlidec",
-                "-lsfml-system-s",
+                "-lsfml-network-s",
+                
                 "-I${workspaceFolder}/include"
             ],
             "options": {
