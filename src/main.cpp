@@ -11,7 +11,7 @@ static int WINDOW_HEIGHT = 720;
 
 static bool up, left, down, right;
 
-sf::UdpSocket socket;
+sf::UdpSocket sock;
 
 void DisconnectAfterExit()
 {
@@ -23,7 +23,7 @@ void DisconnectAfterExit()
     sf::IpAddress recipient = serverip;
     unsigned short port = serverport;
 
-    socket.send(SendConPac, recipient, port);
+    sock.send(SendConPac, recipient, port);
 }
 
 float length(sf::Vector2f v)
@@ -100,7 +100,7 @@ int main()
     sf::Packet SendConPac;
     do
     {
-        status = socket.bind(myport);
+        status = sock.bind(myport);
     } while (status != sf::Socket::Done && myport++);
 
     std::string SendConnect = "Connect";
@@ -109,7 +109,7 @@ int main()
     sf::IpAddress recipient = serverip;
     unsigned short port = serverport;
 
-    socket.send(SendConPac, serverip, serverport);
+    sock.send(SendConPac, serverip, serverport);
 
     ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -162,18 +162,18 @@ int main()
         sf::Packet GameData;
         std::string SendData = "GameData";
         GameData << SendData;
-        socket.send(GameData, recipient, port);
+        sock.send(GameData, recipient, port);
 
         float dataX = pv.x;
         float dataY = pv.y;
         sf::Packet packet;
         packet << dataX << dataY;
-        socket.send(packet, recipient, port);
+        sock.send(packet, recipient, port);
 
         /*
         std::string ReceiveConnect;    
         sf::Packet ConPack;
-        socket.receive(ConPack, recipient, port);
+        sock.receive(ConPack, recipient, port);
         ConPack >> ReceiveConnect;
         std::cout << "ReceiveConnect: " << ReceiveConnect << "\tfrom ip: " << recipient << "\ton port: " << port << std::endl;
         ////////////////////////////////////////////////////////////////////////////////////////
