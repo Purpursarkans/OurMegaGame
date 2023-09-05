@@ -9,9 +9,25 @@
 sf::IpAddress clientip;// = ip;
 unsigned short clientport;// = uport; 
 
+void RecCon(sf::UdpSocket &socket, sf::Packet &ReceivePacket, sf::Packet &SendPacket, std::vector<sf::IpAddress> &ConnectionsIp, std::vector<unsigned short> &ConnectionsPort)
+{
+    sf::Packet pack;
+    socket.receive(ReceivePacket, clientip, clientport);
+
+    for (int i = 0; i < ConnectionsPort.size(); i++) 
+    {
+        if(ConnectionsPort[i] == clientport)
+        {
+            continue;
+        }
+        socket.send(SendPacket, ConnectionsIp[i], ConnectionsPort[i]);
+    }
+}
+
+
 int main()
 {
-	std::cout << "==== Project UDP ====\n";
+  std::cout << "==== Project UDP ====\n";
     
     sf::UdpSocket socket;
 
@@ -25,96 +41,62 @@ int main()
 
     std::cout << "\n*** Server Created ***\n";
 
-   
-
-    std::string data = "hello world";
-    /*
-    while(1)
-    {
-
-        std::cout << "Enter value: ";
-        std::getline(std::cin,data);
-
-        sf::Packet packet;
-        packet << value;
-
-        sf::IpAddress recipient = clientip;
-        unsigned short port = clientport;
-
-        sf::Packet pack;
-        pack << data;
-
-        if(socket.send(pack, recipient, port) != sf::Socket::Done)
-        {
-            std::cout << "not send" << std::endl;
-        }
-    }
-    */
-    
-   /*
-    //////////////////
-    {
-
-        sf::Packet packet;
-        
-        std::string con;
-        sf::Packet pack;
-
-        if (socket.receive(pack, clientip, clientport) == sf::Socket::Done)
-        {
-            pack >> con;
-            std::cout << "Data: " << con << " bytes from ip: " << clientip << " on port " << clientport << std::endl;
-        }
-        if(con == "connect")
-        {
-            std::cout << "connect success to "<< clientip << ":" << clientport << std::endl;
-        }
-
-    }
-    //////////////////
-    */
     float dataX = 0;
     float dataY = 0;
 
     
-
-    
+    std::vector<sf::IpAddress> ConnectionsIp;
+    std::vector<unsigned short> ConnectionsPort;
 
     while(1)
     {
-        
-
         std::string ReceiveConnect;    
         sf::Packet ConPack;
         if (socket.receive(ConPack, clientip, clientport) == sf::Socket::Done)
         {
             ConPack >> ReceiveConnect;
-            std::cout << "ReceiveConnect: " << ReceiveConnect << "\tfrom ip: " << clientip << "\ton port: " << clientport << std::endl;
+            //std::cout << "ReceiveConnect: " << ReceiveConnect << "\tfrom ip: " << clientip << "\ton port: " << clientport << std::endl;
         }
 
-        if(ReceiveConnect == "Connect")
+        if(ReceiveConnect == "Client try connect")
         {
-            std::cout << "im connect c:" << std::endl;
+            sf::Packet SendConPac;
+            std::string SendConnect = "Server connect";
+            SendConPac << SendConnect;
+            socket.send(SendConPac, clientip, clientport);
+
+            std::cout << "im connect from ip: "<< clientip << " port: " << clientport << " c:" << std::endl;
+            ConnectionsIp.push_back(clientip);
+            ConnectionsPort.push_back(clientport);
+            //system("sleep 1");
         }
         if(ReceiveConnect == "Disconect")
         {
-            std::cout << "im dead :c" << std::endl;
-            //system("sleep 5;");
+            std::cout << "im dead :c" << "ip:" << clientip << ":" << clientport << std::endl;
         }
         if(ReceiveConnect == "GameData")
-        {
+        {   
             sf::Packet pack;
-            if (socket.receive(pack, clientip, clientport) == sf::Socket::Done)
-            {
-                pack >> dataX >> dataY;
-                std::cout << "DataX: " << dataX << "\tdataY: " << dataY << "\tfrom ip: " << clientip << "\ton port: " << clientport << std::endl;
-            }
             sf::Packet packsend;
-            std::string dataa = "DATA";
-            packsend << dataa;
-            socket.send(packsend, clientip, clientport);
+            std::string data;
+            
+            //RecCon(socket, pack, packsend, ConnectionsIp, ConnectionsPort);
+
+            socket.receive(pack, clientip, clientport);
+            pack >> dataX >> dataY;
+            packsend << dataX << dataY;
+            //std::cout << "DataX: " << dataX << "\tdataY: " << dataY << "\tfrom ip: " << clientip << "\ton port: " << clientport << std::endl;
+
+            for (int i = 0; i < ConnectionsPort.size(); i++) 
+            {
+                if(ConnectionsPort[i] == clientport)
+                {
+                    continue;
+                }
+                socket.send(packsend, ConnectionsIp[i], ConnectionsPort[i]);
+                std::cout << "packet send to: " << ConnectionsIp[i] << ":" << ConnectionsPort[i] << std::endl;
+            }
         }
-        
     }
-	return 0;
+  return 0;
 }

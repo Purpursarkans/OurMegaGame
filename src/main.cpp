@@ -12,6 +12,8 @@ static int WINDOW_HEIGHT = 720;
 static bool up, left, down, right;
 
 sf::UdpSocket sock;
+bool SetConnect = false;
+
 
 void DisconnectAfterExit()
 {
@@ -39,7 +41,7 @@ sf::Vector2f norm(sf::Vector2f v)
 
 void handleControls(sf::Event event)
 {
-    bool val;
+    bool val = false;
     if (event.type == sf::Event::KeyPressed)
     {
         val = true;
@@ -65,8 +67,9 @@ void log(sf::Vector2f v)
 int main()
 {
     atexit(DisconnectAfterExit);
-    std::cout << "Init" << std::endl;
 
+    std::cout << "Init" << std::endl;
+    
     std::vector<float> fps_avg;
     fps_avg.reserve(101);
     float fps, fps_min, fps_max;
@@ -80,7 +83,7 @@ int main()
 
     std::map<std::string, sf::Texture> textures = r.loadImagesFromFolder("assets/");
     auto CHAR_SPRITE = r.newSprite(&textures["char.png"]);
-    r.newSprite(&textures["TX Plant.png"]);
+    auto TREE_SPRITE = r.newSprite(&textures["TX Plant.png"]);
 
     sf::Font font;
     if (!font.loadFromFile("assets/text.ttf"))
@@ -94,7 +97,6 @@ int main()
         VECTOR2F_ZERO,
         sf::Vector2f(150.f, 150.f)
     );
-
     ////////////////////////////////////////////////////////////////////////////////////////
     sf::Socket::Status status;
     sf::Packet SendConPac;
@@ -103,13 +105,34 @@ int main()
         status = sock.bind(myport);
     } while (status != sf::Socket::Done && myport++);
 
-    std::string SendConnect = "Connect";
+    std::cout << "Now my port is: " << sock.getLocalPort() << std::endl;
+
+    std::string SendConnect = "Client try connect";
     SendConPac << SendConnect;
 
     sf::IpAddress recipient = serverip;
     unsigned short port = serverport;
-
     sock.send(SendConPac, serverip, serverport);
+
+    sf::SocketSelector selector;
+    selector.add(sock);
+
+    std::string ReceiveConnect;    
+    sf::Packet ConPack;
+    std::cout << "Game start after 5 sec pause <3" << std::endl;
+    if (selector.wait(sf::seconds(5.f)))
+    {
+        if(sock.receive(ConPack, recipient, port) == sf::Socket::Done)
+        {
+            ConPack >> ReceiveConnect;
+            if(ReceiveConnect == "Server connect")
+            {
+                SetConnect = true;
+                std::cout << "ReceiveConnect: " << ReceiveConnect << "\tfrom ip: " << recipient << "\ton port: " << port << std::endl;
+            }
+        }
+    }
+    
 
     ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -170,14 +193,17 @@ int main()
         packet << dataX << dataY;
         sock.send(packet, recipient, port);
 
-        /*
-        std::string ReceiveConnect;    
-        sf::Packet ConPack;
-        sock.receive(ConPack, recipient, port);
-        ConPack >> ReceiveConnect;
-        std::cout << "ReceiveConnect: " << ReceiveConnect << "\tfrom ip: " << recipient << "\ton port: " << port << std::endl;
+        if(SetConnect)
+        {
+            float SockdataX;
+            float SockdataY;   
+            sf::Packet ConPack;
+            sock.receive(ConPack, recipient, port);
+            ConPack >> SockdataX >> SockdataY;
+            std::cout << "SockdataX: " << SockdataX << " SockdataY: " << SockdataY << "\tfrom ip: " << recipient << "\ton port: " << port << std::endl;
+        }
         ////////////////////////////////////////////////////////////////////////////////////////
-        */
+        
 
         // sf::Vector2f viewport_target;
 
@@ -188,6 +214,7 @@ int main()
         if (down) player.applyForce(0, 2);
         else if (up) player.applyForce(0, -2);
         // else player.setVelocityY(0.f);
+
 
         auto vvec = r.viewport.getCenter() - player.getPosition(); 
         auto vdist = length(vvec);
