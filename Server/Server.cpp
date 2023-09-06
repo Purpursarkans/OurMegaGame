@@ -77,14 +77,11 @@ int main()
         if(ReceiveConnect == "GameData")
         {   
             sf::Packet pack;
-            sf::Packet packsend;
             std::string data;
             
             //RecCon(socket, pack, packsend, ConnectionsIp, ConnectionsPort);
 
             socket.receive(pack, clientip, clientport);
-            pack >> dataX >> dataY;
-            packsend << dataX << dataY;
             //std::cout << "DataX: " << dataX << "\tdataY: " << dataY << "\tfrom ip: " << clientip << "\ton port: " << clientport << std::endl;
 
             for (int i = 0; i < ConnectionsPort.size(); i++) 
@@ -93,7 +90,7 @@ int main()
                 {
                     continue;
                 }
-                socket.send(packsend, ConnectionsIp[i], ConnectionsPort[i]);
+                socket.send(pack, ConnectionsIp[i], ConnectionsPort[i]);
                 std::cout << "packet send to: " << ConnectionsIp[i] << ":" << ConnectionsPort[i] << std::endl;
             }
         }

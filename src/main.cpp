@@ -187,8 +187,10 @@ int main()
         GameData << SendData;
         sock.send(GameData, recipient, port);
 
-        float dataX = pv.x;
-        float dataY = pv.y;
+        sf::Vector2 playPos = player.getPosition();
+        
+        float dataX = playPos.x;
+        float dataY = playPos.y;
         sf::Packet packet;
         packet << dataX << dataY;
         sock.send(packet, recipient, port);
