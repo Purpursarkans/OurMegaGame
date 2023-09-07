@@ -120,9 +120,12 @@ int main()
         sf::Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::X)
+            if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::F)
             {
-                player.applyForce(1000.f, 0.f);
+                auto n = norm(player.getVelocity());
+                auto old_pos = player.getPosition();
+                auto new_pos = old_pos + n*100.f;
+                player.setPosition(new_pos);
             }
             else if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::R)
             {
@@ -153,7 +156,7 @@ int main()
 
         auto pv = player.getVelocity();
         text << "Velocity" << "\n";
-        text << "+ X " << pv.x << "\n";
+        text << "+ X " << pv.x << "\n"; 
         text << "+ Y " << pv.y << "\n";
 
 
@@ -175,7 +178,7 @@ int main()
         sf::Packet ConPack;
         sock.receive(ConPack, recipient, port);
         ConPack >> ReceiveConnect;
-        std::cout << "ReceiveConnect: " << ReceiveConnect << "\tfrom ip: " << recipient << "\ton port: " << port << std::endl;
+        // std::cout << "ReceiveConnect: " << ReceiveConnect << "\tfrom ip: " << recipient << "\ton port: " << port << std::endl;
         ////////////////////////////////////////////////////////////////////////////////////////
         */
 
@@ -191,11 +194,11 @@ int main()
 
         auto vvec = r.viewport.getCenter() - player.getPosition(); 
         auto vdist = length(vvec);
-        text << "Viewport distance: " << vvec.x << " " <<vvec.y << "\n";
-        text << "+ Length " << vdist << "\n";
+        // text << "Viewport distance: " << vvec.x << " " <<vvec.y << "\n";
+        // text << "+ Length " << vdist << "\n";
 
         // float vm = 1.01f * s * vdist;
-        if (vdist > 20.f) r.viewport.move(-vvec * s);
+        if (vdist > 20.f) r.viewport.move((sf::Vector2f(1.f * -vvec.x * s, 2.5f * -vvec.y * s)));
 
         player.process(s);
 
@@ -204,6 +207,7 @@ int main()
 
         sf::Text texto;
         texto.setPosition(r.viewport.getCenter()-(r.viewport.getSize()/2.f));
+        texto.setScale(0.5f, 0.5f);
         texto.setFont(font);
         texto.setString(text.str());
         window.draw(texto);

@@ -27,6 +27,7 @@ Renderer::Renderer(sf::RenderWindow& w) : window(w)
 {
     // auto ws = w.getSize();
     viewport.setSize(1280.f, 720.f);
+    viewport.zoom(0.5f);
     viewport.setCenter(0.5f, 0.5f);
     w.setView(viewport);
 }
